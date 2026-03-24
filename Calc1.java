@@ -7,6 +7,8 @@ public class Calc1 {
     private JTextField visorEquacao;
     private JTextField visorAtual;
 
+    private double resultado=0;
+
     public Calc1(){
         janela = new JFrame();
 
@@ -30,7 +32,7 @@ public class Calc1 {
 
         janela.add(painelVisores, BorderLayout.NORTH);
 
-        JPanel painelBotoes = new JPanel(new GridLayout(4,4));
+        JPanel painelBotoes = new JPanel(new GridLayout(4,4, 5, 5));
 
         String[] textos = {
             "7", "8", "9", "/",
@@ -41,7 +43,7 @@ public class Calc1 {
 
         for (String texto : textos){
             JButton btn = new JButton(texto);
-            btn.addActionListener(null);
+            btn.addActionListener(e -> tratarClique(texto));
             painelBotoes.add(btn);
         }
 
@@ -50,4 +52,32 @@ public class Calc1 {
         janela.setVisible(true); //deixar por ultimo
 
     }
+
+    private void tratarClique(String comando){
+        calcular(Double.parseDouble(visorAtual.getText()), comando);
+
+        if ("0123456789".contains(comando)) {
+            visorAtual.setText(comando);
+        } else if ("+-*/=".contains(comando)){
+            if (comando.equals("=")) {
+                visorEquacao.setText(visorEquacao.getText() + visorAtual.getText() + " =");
+                visorAtual.setText(String.valueOf(resultado));
+            } else {
+                visorEquacao.setText(visorEquacao.getText() + visorAtual.getText() + " " + comando + "  ");
+            }
+        }
+    }
+
+    private void calcular(double valor, String operador){
+        if (operador.equals("+")){
+            resultado += valor;
+        } else if (operador.equals("-")){
+            resultado -= valor;
+        } else if (operador.equals("*")){
+            resultado *= valor;
+        } else if (operador.equals("/")){
+            resultado /= valor;
+        }
+    }
+
 }
