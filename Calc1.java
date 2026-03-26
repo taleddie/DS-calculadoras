@@ -8,6 +8,8 @@ public class Calc1 {
     private JTextField visorAtual;
 
     private double resultado=0;
+    private String operadorPendente = "+";
+    private boolean novoNumero = true;
 
     public Calc1(){
         janela = new JFrame();
@@ -54,28 +56,42 @@ public class Calc1 {
     }
 
     private void tratarClique(String comando){
-        calcular(Double.parseDouble(visorAtual.getText()), comando);
-
         if ("0123456789".contains(comando)) {
-            visorAtual.setText(comando);
+            if (novoNumero) {
+                visorAtual.setText(comando);
+                novoNumero=false;
+            } else {
+                visorAtual.setText(visorAtual.getText()+comando);
+            }
         } else if ("+-*/=".contains(comando)){
+            calcular(Double.parseDouble(visorAtual.getText()));
+            operadorPendente = comando;
             if (comando.equals("=")) {
                 visorEquacao.setText(visorEquacao.getText() + visorAtual.getText() + " =");
                 visorAtual.setText(String.valueOf(resultado));
+                resultado = 0;
             } else {
                 visorEquacao.setText(visorEquacao.getText() + visorAtual.getText() + " " + comando + "  ");
+                visorAtual.setText(String.valueOf(resultado));
             }
+            novoNumero=true;
+        } else if(comando.equals("C")) {
+            resultado = 0;
+            operadorPendente = "=";
+            novoNumero = true;
+            visorAtual.setText("0");
+            visorEquacao.setText(" ");
         }
     }
 
-    private void calcular(double valor, String operador){
-        if (operador.equals("+")){
+    private void calcular(double valor){
+        if (operadorPendente.equals("+")){
             resultado += valor;
-        } else if (operador.equals("-")){
+        } else if (operadorPendente.equals("-")){
             resultado -= valor;
-        } else if (operador.equals("*")){
+        } else if (operadorPendente.equals("*")){
             resultado *= valor;
-        } else if (operador.equals("/")){
+        } else if (operadorPendente.equals("/")){
             resultado /= valor;
         }
     }
